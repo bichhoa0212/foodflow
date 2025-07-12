@@ -27,8 +27,8 @@ public class UserController {
 
     public UserController() {
         // Initialize with some sample data
-        users.add(new User(idCounter.incrementAndGet(), "John Doe", "john.doe@example.com", "+1234567890", "CUSTOMER"));
-        users.add(new User(idCounter.incrementAndGet(), "Jane Smith", "jane.smith@example.com", "+0987654321", "ADMIN"));
+//        users.add(new User(idCounter.incrementAndGet(), "John Doe", "john.doe@example.com", "+1234567890", "CUSTOMER"));
+//        users.add(new User(idCounter.incrementAndGet(), "Jane Smith", "jane.smith@example.com", "+0987654321", "ADMIN"));
     }
 
     @GetMapping
