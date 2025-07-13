@@ -11,7 +11,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import project.foodflow.model.User;
+import project.foodflow.entity.User;
 
 import java.util.ArrayList;
 import java.util.List;
