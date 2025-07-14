@@ -222,3 +222,67 @@ INSERT INTO group_users (group_id, user_id, assigned_at, created_date, status) V
 (5, 5, NOW(), NOW(), 1), -- Driver user in DRIVERS group
 (6, 6, NOW(), NOW(), 1), -- Restaurant Owner in RESTAURANT_OWNERS group
 (7, 7, NOW(), NOW(), 1); -- Restaurant Staff in RESTAURANT_STAFF group 
+
+-- =====================================================
+-- SAMPLE DATA FOR FOODFLOW TABLES
+-- =====================================================
+
+-- RESTAURANTS
+INSERT INTO restaurants (name, address, phone_number, logo_url, cover_image_url, description, opening_time, closing_time, owner_id, rating, created_date, status)
+VALUES
+('Pizza Home', '123 Pizza Street', '0909123456', 'https://img.foodflow.com/pizza-logo.png', 'https://img.foodflow.com/pizza-cover.jpg', 'Nhà hàng pizza nổi tiếng', '09:00', '22:00', 6, 4.5, NOW(), 1),
+('Burger King', '456 Burger Avenue', '0909234567', 'https://img.foodflow.com/burger-logo.png', 'https://img.foodflow.com/burger-cover.jpg', 'Burger ngon số 1', '08:00', '23:00', 6, 4.2, NOW(), 1);
+
+-- PRODUCT CATEGORIES
+INSERT INTO product_categories (name, description, image_url, status) VALUES
+('Pizza', 'Các loại pizza Ý truyền thống', 'https://img.foodflow.com/pizza-category.jpg', 1),
+('Burger', 'Các loại burger hấp dẫn', 'https://img.foodflow.com/burger-category.jpg', 1),
+('Nước uống', 'Đồ uống giải khát', 'https://img.foodflow.com/drink-category.jpg', 1);
+
+-- PRODUCTS
+INSERT INTO products (name, description, image_url, price, restaurant_id, category_id, created_date, status) VALUES
+('Pizza Margherita', 'Pizza truyền thống với phô mai mozzarella và sốt cà chua', 'https://img.foodflow.com/margherita.jpg', 120000, 1, 1, NOW(), 1),
+('Pizza Pepperoni', 'Pizza với xúc xích pepperoni', 'https://img.foodflow.com/pepperoni.jpg', 135000, 1, 1, NOW(), 1),
+('Burger Bò', 'Burger bò Mỹ, phô mai cheddar', 'https://img.foodflow.com/beef-burger.jpg', 90000, 2, 2, NOW(), 1),
+('Coca Cola', 'Nước ngọt Coca Cola lon 330ml', 'https://img.foodflow.com/cocacola.jpg', 15000, 2, 3, NOW(), 1);
+
+-- PROMOTIONS
+INSERT INTO promotions (code, description, discount_type, discount_value, max_discount_amount, min_order_value, start_date, end_date, usage_limit, usage_count, created_date, status)
+VALUES
+('FOOD10', 'Giảm 10% cho đơn từ 200k', 'PERCENTAGE', 10, 50000, 200000, NOW(), DATE_ADD(NOW(), INTERVAL 30 DAY), 100, 0, NOW(), 1),
+('FREESHIP', 'Miễn phí vận chuyển cho đơn từ 100k', 'FIXED_AMOUNT', 20000, NULL, 100000, NOW(), DATE_ADD(NOW(), INTERVAL 30 DAY), 200, 0, NOW(), 1);
+
+-- SHIPPERS
+INSERT INTO shippers (user_id, license_plate, vehicle_type, rating, created_date, status)
+VALUES (5, '59A1-12345', 'Motorbike', 5.0, NOW(), 2);
+
+-- SHIPPER LOCATIONS
+INSERT INTO shipper_locations (shipper_id, latitude, longitude, last_updated)
+VALUES (1, 10.762622, 106.660172, NOW());
+
+-- ORDERS
+INSERT INTO orders (order_code, user_id, restaurant_id, delivery_address, contact_phone, notes, subtotal_amount, shipping_fee, discount_amount, total_amount, payment_method, order_date, status, promotion_id, shipper_id)
+VALUES
+('HD-110725', 4, 1, '789 Đường ABC, Quận 1, TP.HCM', '0111111111', 'Giao nhanh giúp mình', 255000, 20000, 25500, 249500, 'COD', NOW(), 2, 1, 1);
+
+-- ORDER ITEMS
+INSERT INTO order_items (order_id, product_id, quantity, price_at_order, total_price)
+VALUES
+(1, 1, 1, 120000, 120000),
+(1, 2, 1, 135000, 135000);
+
+-- REVIEWS
+INSERT INTO reviews (user_id, order_id, restaurant_id, rating, comment, created_date)
+VALUES (4, 1, 1, 5, 'Pizza rất ngon, giao hàng nhanh!', NOW());
+
+-- TRANSACTIONS
+INSERT INTO transactions (order_id, gateway, gateway_transaction_id, amount, transaction_date, status, notes)
+VALUES (1, 'COD', 'COD-20240601-0001', 249500, NOW(), 1, 'Thanh toán khi nhận hàng');
+
+-- NOTIFICATIONS
+INSERT INTO notifications (user_id, title, message, type, target_id, is_read, created_date)
+VALUES (4, 'Đơn hàng đã xác nhận', 'Đơn hàng HD-110725 của bạn đã được xác nhận và đang chuẩn bị.', 'ORDER_STATUS', 1, FALSE, NOW());
+
+-- USER FAVORITE RESTAURANTS
+INSERT INTO user_favorite_restaurants (user_id, restaurant_id, created_date)
+VALUES (4, 1, NOW()); 

@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import project.foodflow.model.User;
+import project.foodflow.entity.User;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -51,7 +51,7 @@ public class UserControllerTest {
         newUser.setName("Test User");
         newUser.setEmail("test@example.com");
         newUser.setPhone("+1234567890");
-        newUser.setRole("CUSTOMER");
+//        newUser.setRole("CUSTOMER");
 
         mockMvc.perform(post("/api/users")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -69,7 +69,7 @@ public class UserControllerTest {
         updatedUser.setName("Updated User");
         updatedUser.setEmail("updated@example.com");
         updatedUser.setPhone("+0987654321");
-        updatedUser.setRole("ADMIN");
+//        updatedUser.setRole("ADMIN");
 
         mockMvc.perform(put("/api/users/1")
                 .contentType(MediaType.APPLICATION_JSON)
