@@ -60,6 +60,14 @@ public class Restaurant {
     @Column(precision = 3, scale = 2)
     private BigDecimal rating;
 
+    @Schema(description = "Lượt mua nhà hàng")
+    @Column(name = "purchase_count", nullable = false)
+    private Integer purchaseCount = 0;
+
+    @Schema(description = "Lượt đánh giá nhà hàng")
+    @Column(name = "review_count", nullable = false)
+    private Integer reviewCount = 0;
+
     @Schema(description = "Ngày tạo")
     @Column(name = "created_date", nullable = false)
     private LocalDateTime createdDate;

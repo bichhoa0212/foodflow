@@ -163,6 +163,8 @@ CREATE TABLE restaurants (
     closing_time TIME, -- Giờ đóng cửa
     owner_id BIGINT, -- Người sở hữu/quản lý nhà hàng (liên kết app_users)
     rating DECIMAL(3, 2) DEFAULT 0.00, -- Điểm đánh giá trung bình
+    purchase_count INTEGER NOT NULL DEFAULT 0, -- Lượt mua nhà hàng
+    review_count INTEGER NOT NULL DEFAULT 0, -- Lượt đánh giá nhà hàng
     created_date DATETIME(6) NOT NULL, -- Ngày tạo
     modified_date DATETIME(6), -- Ngày cập nhật
     status INTEGER NOT NULL DEFAULT 1, -- 1: Mở, 2: Đóng, 3: Tạm đóng
@@ -185,6 +187,8 @@ CREATE TABLE products (
     description TEXT, -- Mô tả sản phẩm
     image_url VARCHAR(500), -- Ảnh sản phẩm
     price DECIMAL(10, 2) NOT NULL, -- Giá sản phẩm
+    purchase_count INTEGER NOT NULL DEFAULT 0, -- Lượt mua sản phẩm
+    review_count INTEGER NOT NULL DEFAULT 0, -- Lượt đánh giá sản phẩm
     restaurant_id BIGINT NOT NULL, -- Nhà hàng cung cấp
     category_id BIGINT NOT NULL, -- Danh mục sản phẩm
     created_date DATETIME(6) NOT NULL, -- Ngày tạo
@@ -237,12 +241,14 @@ CREATE TABLE reviews (
     user_id BIGINT NOT NULL, -- Người đánh giá
     order_id BIGINT NOT NULL, -- Đơn hàng được đánh giá
     restaurant_id BIGINT NOT NULL, -- Nhà hàng được đánh giá
+    product_id BIGINT, -- Sản phẩm được đánh giá (nullable)
     rating INT NOT NULL, -- Số sao đánh giá (1-5)
     comment TEXT, -- Nội dung bình luận
     created_date DATETIME(6) NOT NULL, -- Ngày tạo đánh giá
     FOREIGN KEY (user_id) REFERENCES app_users(id),
     FOREIGN KEY (order_id) REFERENCES orders(id),
-    FOREIGN KEY (restaurant_id) REFERENCES restaurants(id)
+    FOREIGN KEY (restaurant_id) REFERENCES restaurants(id),
+    FOREIGN KEY (product_id) REFERENCES products(id)
 );
 
 -- Bảng vị trí shipper (realtime)

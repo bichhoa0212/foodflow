@@ -34,6 +34,14 @@ public class Product {
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal price;
 
+    @Schema(description = "Lượt mua sản phẩm")
+    @Column(name = "purchase_count", nullable = false)
+    private Integer purchaseCount = 0;
+
+    @Schema(description = "Lượt đánh giá sản phẩm")
+    @Column(name = "review_count", nullable = false)
+    private Integer reviewCount = 0;
+
     @Schema(description = "Nhà hàng cung cấp sản phẩm")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id", nullable = false)

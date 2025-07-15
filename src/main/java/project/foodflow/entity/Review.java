@@ -32,6 +32,11 @@ public class Review {
     @JoinColumn(name = "restaurant_id", nullable = false)
     private Restaurant restaurant;
 
+    @Schema(description = "Sản phẩm được đánh giá")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id")
+    private Product product;
+
     @Schema(description = "Số sao đánh giá (1-5)")
     @Column(nullable = false)
     private Integer rating;
