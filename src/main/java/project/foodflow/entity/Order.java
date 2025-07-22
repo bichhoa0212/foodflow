@@ -64,6 +64,10 @@ public class Order {
     @Column(name = "payment_method", length = 50)
     private String paymentMethod;
 
+    @Schema(description = "Trạng thái thanh toán")
+    @Column(name = "payment_status", length = 50)
+    private String paymentStatus;
+
     @Schema(description = "Ngày đặt hàng")
     @Column(name = "order_date", nullable = false)
     private LocalDateTime orderDate;
