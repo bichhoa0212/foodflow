@@ -57,8 +57,8 @@ INSERT IGNORE INTO products (name, description, price, stock, supplier_id, categ
 ('Nước rửa chén Sunlight', 'Nước rửa chén hương chanh 750ml.', 25000, 200, 2, 3, NOW(), 1);
 
 -- Khuyến mãi mẫu
-INSERT IGNORE INTO promotions (code, description, discount_type, discount_value, start_date, end_date, created_date, status) VALUES
-('SALE10', 'Giảm 10% cho đơn hàng từ 200k', 'PERCENTAGE', 10, NOW(), DATE_ADD(NOW(), INTERVAL 30 DAY), NOW(), 1);
+INSERT IGNORE INTO promotions (code, description, discount_type, discount_value, type, is_active, priority, image_url, start_date, end_date, created_date, status) VALUES
+('SALE10', 'Giảm 10% cho đơn hàng từ 200k', 'PERCENTAGE', 10, 'ORDER', TRUE, 1, 'https://cdn.flowmart.com/banner/sale10.jpg', NOW(), DATE_ADD(NOW(), INTERVAL 30 DAY), NOW(), 1);
 
 INSERT IGNORE INTO promotion_products (promotion_id, product_id) VALUES (1, 1), (1, 2);
 
@@ -83,4 +83,23 @@ INSERT IGNORE INTO inventory_history (product_id, change_quantity, stock_after_c
 (1, 50, 150, 'IMPORT', NOW(), 'Nhập kho đầu tháng'),
 (1, -10, 140, 'EXPORT', NOW(), 'Xuất bán lẻ'),
 (2, 100, 600, 'IMPORT', NOW(), 'Nhập kho đầu tháng'),
-(3, -5, 195, 'EXPORT', NOW(), 'Xuất bán lẻ'); 
+(3, -5, 195, 'EXPORT', NOW(), 'Xuất bán lẻ');
+
+-- Coupon/Mã giảm giá mẫu
+INSERT IGNORE INTO coupons (code, description, discount_type, discount_value, min_order_value, max_discount_amount, start_date, end_date, usage_limit, usage_count, is_active, created_date) VALUES
+('WELCOME10', 'Giảm 10% cho đơn đầu tiên', 'PERCENTAGE', 10, 100000, 50000, NOW(), DATE_ADD(NOW(), INTERVAL 30 DAY), 100, 0, TRUE, NOW()),
+('FREESHIP', 'Miễn phí vận chuyển cho đơn từ 200k', 'FIXED_AMOUNT', 30000, 200000, 30000, NOW(), DATE_ADD(NOW(), INTERVAL 30 DAY), 200, 0, TRUE, NOW());
+
+-- Gán mã giảm giá cho user mẫu
+INSERT IGNORE INTO user_coupons (user_id, coupon_id, used, assigned_date) VALUES
+(1, 1, FALSE, NOW()),
+(2, 2, FALSE, NOW());
+
+-- Slider/Banner động mẫu
+INSERT IGNORE INTO sliders (title, image_url, link_url, description, position, is_active, start_date, end_date, created_date) VALUES
+('Khuyến mãi hè 2024', 'https://cdn.flowmart.com/banner/summer2024.jpg', 'https://flowmart.com/khuyen-mai', 'Giảm giá cực sốc mùa hè!', 1, TRUE, NOW(), DATE_ADD(NOW(), INTERVAL 15 DAY), NOW()),
+('Mã giảm giá FREESHIP', 'https://cdn.flowmart.com/banner/freeship.jpg', 'https://flowmart.com/freeship', 'Nhập mã FREESHIP cho đơn từ 200k', 2, TRUE, NOW(), DATE_ADD(NOW(), INTERVAL 30 DAY), NOW());
+
+-- Mở rộng dữ liệu khuyến mãi
+INSERT IGNORE INTO promotions (code, description, discount_type, discount_value, type, is_active, priority, image_url, start_date, end_date, created_date, status) VALUES
+('ORDER20', 'Giảm 20k cho đơn hàng từ 300k', 'FIXED_AMOUNT', 20000, 'ORDER', TRUE, 1, 'https://cdn.flowmart.com/banner/order20.jpg', NOW(), DATE_ADD(NOW(), INTERVAL 20 DAY), NOW(), 1); 

@@ -279,4 +279,48 @@ CREATE TABLE IF NOT EXISTS notifications (
     FOREIGN KEY (user_id) REFERENCES app_users(id)
 );
 
+-- Coupon/Mã giảm giá
+CREATE TABLE IF NOT EXISTS coupons (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    code VARCHAR(50) NOT NULL UNIQUE,
+    description VARCHAR(255),
+    discount_type VARCHAR(20) NOT NULL, -- PERCENTAGE, FIXED_AMOUNT
+    discount_value DECIMAL(10,2) NOT NULL,
+    min_order_value DECIMAL(10,2),
+    max_discount_amount DECIMAL(10,2),
+    start_date DATETIME(6) NOT NULL,
+    end_date DATETIME(6) NOT NULL,
+    usage_limit INT,
+    usage_count INT,
+    is_active BOOLEAN DEFAULT TRUE,
+    created_date DATETIME(6) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS user_coupons (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    user_id BIGINT NOT NULL,
+    coupon_id BIGINT NOT NULL,
+    used BOOLEAN DEFAULT FALSE,
+    used_date DATETIME(6),
+    assigned_date DATETIME(6) NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES app_users(id),
+    FOREIGN KEY (coupon_id) REFERENCES coupons(id)
+);
+
+-- Slider động/Banner quảng cáo
+CREATE TABLE IF NOT EXISTS sliders (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    title VARCHAR(255),
+    image_url VARCHAR(500) NOT NULL,
+    link_url VARCHAR(500),
+    description VARCHAR(255),
+    position INT DEFAULT 0,
+    is_active BOOLEAN DEFAULT TRUE,
+    start_date DATETIME(6),
+    end_date DATETIME(6),
+    created_date DATETIME(6) NOT NULL
+);
+
+-- Đã xóa đoạn ALTER TABLE promotions để tránh lỗi duplicate column
+
 

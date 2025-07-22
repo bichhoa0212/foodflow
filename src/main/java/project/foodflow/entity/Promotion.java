@@ -65,4 +65,16 @@ public class Promotion {
     @Schema(description = "Trạng thái: 1-Đang hoạt động, 2-Hết hạn, 3-Vô hiệu hóa")
     @Column(nullable = false)
     private Integer status;
+
+    @Column(name = "type", length = 20)
+    private String type = "ORDER";
+
+    @Column(name = "is_active")
+    private Boolean isActive = true;
+
+    @Column(name = "priority")
+    private Integer priority = 0;
+
+    @Column(name = "image_url", length = 500)
+    private String imageUrl;
 } 
