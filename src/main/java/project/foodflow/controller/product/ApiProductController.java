@@ -8,14 +8,13 @@ import project.foodflow.constant.ReturnCode;
 import project.foodflow.dto.OrderRequest;
 import project.foodflow.dto.ProductDto;
 import project.foodflow.dto.Response;
-import project.foodflow.entity.Order;
-import project.foodflow.entity.OrderItem;
 import project.foodflow.entity.Product;
 import project.foodflow.entity.User;
 import project.foodflow.repository.OrderItemRepository;
 import project.foodflow.repository.OrderRepository;
 import project.foodflow.repository.ProductRepository;
 import project.foodflow.repository.ReviewRepository;
+import project.foodflow.service.ProductService;
 
 @RestController
 @RequestMapping("/api/products")
@@ -28,6 +27,9 @@ public class ApiProductController {
     private OrderRepository orderRepository;
     @Autowired
     private OrderItemRepository orderItemRepository;
+    @Autowired
+    private ProductService productService;
+
 
     @GetMapping("/{id}")
     public ResponseEntity<Response<ProductDto>> getProductDetail(@PathVariable Long id) {
@@ -171,45 +173,8 @@ public class ApiProductController {
 
     @PostMapping("/order")
     public ResponseEntity<Response<java.util.Map<String, Object>>> orderProducts(@RequestBody OrderRequest request, @AuthenticationPrincipal User user) {
-        if (request.getItems() == null || request.getItems().isEmpty()) {
-            return ResponseEntity.badRequest().body(new Response<>(400, "BAD_REQUEST", "Chưa chọn sản phẩm nào", null));
-        }
-        // Validate số lượng
-        for (OrderRequest.OrderItemRequest itemReq : request.getItems()) {
-            if (itemReq.getQuantity() == null || itemReq.getQuantity() < 1) {
-                return ResponseEntity.badRequest().body(new Response<>(400, "BAD_REQUEST", "Số lượng không hợp lệ", null));
-            }
-        }
-        // Tạo đơn hàng
-        Order order = new Order();
-        order.setUser(user);
-        // Lấy nhà hàng từ sản phẩm đầu tiên (giả sử 1 đơn chỉ cho 1 nhà hàng)
-        Long firstProductId = request.getItems().get(0).getProductId();
-        order.setRestaurant(productRepository.findById(firstProductId).map(Product::getRestaurant).orElse(null));
-        order.setDeliveryAddress(request.getDeliveryAddress());
-        order.setContactPhone(request.getContactPhone());
-        order.setNotes(request.getNotes());
-        order.setOrderDate(java.time.LocalDateTime.now());
-        order.setStatus(1); // Đang xử lý
-        order = orderRepository.save(order);
-        // Tạo order items
-        java.util.List<OrderItem> orderItems = new java.util.ArrayList<>();
-        for (OrderRequest.OrderItemRequest itemReq : request.getItems()) {
-            Product product = productRepository.findById(itemReq.getProductId()).orElse(null);
-            if (product == null) continue;
-            OrderItem item = new OrderItem();
-            item.setOrder(order);
-            item.setProduct(product);
-            item.setQuantity(itemReq.getQuantity());
-            item.setPriceAtOrder(product.getPrice());
-            item.setTotalPrice(product.getPrice().multiply(java.math.BigDecimal.valueOf(itemReq.getQuantity())));
-            orderItemRepository.save(item);
-            orderItems.add(item);
-        }
-        // Trả về đơn hàng và danh sách item
-        java.util.Map<String, Object> result = new java.util.HashMap<>();
-        result.put("order", order);
-        result.put("orderItems", orderItems);
-        return ResponseEntity.ok(new Response<>(200, "SUCCESS", "Đặt hàng thành công", result));
+
+        return ResponseEntity.ok(new Response<>(200, "SUCCESS", "Đặt hàng thành công", null));
     }
+
 }

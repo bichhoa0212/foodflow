@@ -5,6 +5,8 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import io.swagger.v3.oas.annotations.media.Schema;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "products")
@@ -42,15 +44,42 @@ public class Product {
     @Column(name = "review_count", nullable = false)
     private Integer reviewCount = 0;
 
-    @Schema(description = "Nhà hàng cung cấp sản phẩm")
+    @Schema(description = "Số lượng tồn kho sản phẩm")
+    @Column(name = "stock", nullable = false)
+    private Integer stock = 0;
+
+    @Schema(description = "Kiểu giảm giá sản phẩm: PERCENTAGE hoặc FIXED_AMOUNT")
+    @Column(name = "discount_type", length = 20)
+    private String discountType;
+
+    @Schema(description = "Giá trị giảm giá sản phẩm")
+    @Column(name = "discount_value", precision = 10, scale = 2)
+    private BigDecimal discountValue;
+
+    @Schema(description = "Ngày bắt đầu giảm giá sản phẩm")
+    @Column(name = "discount_start_date")
+    private LocalDateTime discountStartDate;
+
+    @Schema(description = "Ngày kết thúc giảm giá sản phẩm")
+    @Column(name = "discount_end_date")
+    private LocalDateTime discountEndDate;
+
+    @Schema(description = "Nhà cung cấp sản phẩm")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "restaurant_id", nullable = false)
-    private Restaurant restaurant;
+    @JoinColumn(name = "supplier_id", nullable = false)
+    @JsonIgnore
+    private Supplier supplier;
 
     @Schema(description = "Danh mục sản phẩm")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
-    private ProductCategory category;
+    @JsonIgnore
+    private Category category;
+
+    @Schema(description = "Danh sách khuyến mãi áp dụng cho sản phẩm")
+    @ManyToMany(mappedBy = "products")
+    @JsonIgnore
+    private java.util.List<Promotion> promotions;
 
     @Schema(description = "Ngày tạo sản phẩm")
     @Column(name = "created_date", nullable = false)

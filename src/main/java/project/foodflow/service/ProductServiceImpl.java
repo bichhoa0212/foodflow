@@ -68,4 +68,76 @@ public class ProductServiceImpl implements ProductService {
             page.getSize()
         );
     }
+
+    @Override
+    public List<ProductDto> getTopSellingProducts(int limit) {
+        // Lấy top N sản phẩm theo purchase_count giảm dần
+        org.springframework.data.domain.Pageable pageable = org.springframework.data.domain.PageRequest.of(0, limit);
+        List<Product> topProducts = productRepository.findTopByOrderByPurchaseCountDesc(pageable);
+        
+        // Debug logging
+        System.out.println("Limit requested: " + limit);
+        System.out.println("Pageable: " + pageable);
+        System.out.println("Products found: " + topProducts.size());
+        topProducts.forEach(p -> System.out.println("Product: " + p.getName() + " - Purchase count: " + p.getPurchaseCount()));
+
+        return topProducts.stream().map(product -> {
+            ProductDto dto = new ProductDto();
+            dto.setId(product.getId());
+            dto.setName(product.getName());
+            dto.setDescription(product.getDescription());
+            dto.setImageUrl(product.getImageUrl());
+            dto.setPrice(product.getPrice());
+            dto.setStatus(product.getStatus());
+            dto.setPurchaseCount(product.getPurchaseCount());
+            dto.setReviewCount(product.getReviewCount());
+            dto.setDiscountType(product.getDiscountType());
+            dto.setDiscountValue(product.getDiscountValue());
+            return dto;
+        }).collect(java.util.stream.Collectors.toList());
+    }
+
+    @Override
+    public List<ProductDto> getTopReviewedProducts(int limit) {
+        // Lấy top N sản phẩm theo review_count giảm dần
+        org.springframework.data.domain.Pageable pageable = org.springframework.data.domain.PageRequest.of(0, limit);
+        List<Product> topProducts = productRepository.findTopByOrderByReviewCountDesc(pageable);
+        
+        return topProducts.stream().map(product -> {
+            ProductDto dto = new ProductDto();
+            dto.setId(product.getId());
+            dto.setName(product.getName());
+            dto.setDescription(product.getDescription());
+            dto.setImageUrl(product.getImageUrl());
+            dto.setPrice(product.getPrice());
+            dto.setStatus(product.getStatus());
+            dto.setPurchaseCount(product.getPurchaseCount());
+            dto.setReviewCount(product.getReviewCount());
+            dto.setDiscountType(product.getDiscountType());
+            dto.setDiscountValue(product.getDiscountValue());
+            return dto;
+        }).collect(java.util.stream.Collectors.toList());
+    }
+
+    @Override
+    public List<ProductDto> getTopDiscountedProducts(int limit) {
+        // Lấy top N sản phẩm có khuyến mãi theo discount_value giảm dần
+        org.springframework.data.domain.Pageable pageable = org.springframework.data.domain.PageRequest.of(0, limit);
+        List<Product> topProducts = productRepository.findTopByDiscountValueDesc(pageable);
+        
+        return topProducts.stream().map(product -> {
+            ProductDto dto = new ProductDto();
+            dto.setId(product.getId());
+            dto.setName(product.getName());
+            dto.setDescription(product.getDescription());
+            dto.setImageUrl(product.getImageUrl());
+            dto.setPrice(product.getPrice());
+            dto.setStatus(product.getStatus());
+            dto.setPurchaseCount(product.getPurchaseCount());
+            dto.setReviewCount(product.getReviewCount());
+            dto.setDiscountType(product.getDiscountType());
+            dto.setDiscountValue(product.getDiscountValue());
+            return dto;
+        }).collect(java.util.stream.Collectors.toList());
+    }
 } 

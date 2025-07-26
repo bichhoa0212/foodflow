@@ -51,14 +51,17 @@ INSERT IGNORE INTO suppliers (name, contact_info, address, phone, email, created
 ('Công ty Đồ uống XYZ', 'Ms. B', '456 Hai Bà Trưng, Q3, TP.HCM', '0909000002', 'xyz@drink.com', NOW(), 1);
 
 -- Sản phẩm mẫu
-INSERT IGNORE INTO products (name, description, price, stock, supplier_id, category_id, created_date, status) VALUES
-('Thịt heo sạch', 'Thịt heo tươi ngon, đảm bảo vệ sinh.', 120000, 100, 1, 1, NOW(), 1),
-('Nước khoáng Lavie', 'Nước khoáng thiên nhiên đóng chai 500ml.', 6000, 500, 2, 2, NOW(), 1),
-('Nước rửa chén Sunlight', 'Nước rửa chén hương chanh 750ml.', 25000, 200, 2, 3, NOW(), 1);
+INSERT IGNORE INTO products (name, description, image_url, price, purchase_count, review_count, stock, discount_type, discount_value, discount_start_date, discount_end_date, supplier_id, category_id, created_date, status) VALUES
+('Thịt heo sạch', 'Thịt heo tươi ngon, đảm bảo vệ sinh.', 'https://cdn.flowmart.com/products/thit-heo.jpg', 120000, 50, 12, 100, 'PERCENTAGE', 10, NOW(), DATE_ADD(NOW(), INTERVAL 7 DAY), 1, 1, NOW(), 1),
+('Nước khoáng Lavie', 'Nước khoáng thiên nhiên đóng chai 500ml.', 'https://cdn.flowmart.com/products/lavie.jpg', 6000, 200, 45, 500, NULL, NULL, NULL, NULL, 2, 2, NOW(), 1),
+('Nước rửa chén Sunlight', 'Nước rửa chén hương chanh 750ml.', 'https://cdn.flowmart.com/products/sunlight.jpg', 25000, 80, 23, 200, 'FIXED_AMOUNT', 5000, NOW(), DATE_ADD(NOW(), INTERVAL 15 DAY), 2, 3, NOW(), 1),
+('Gạo ST25', 'Gạo thơm ST25 chất lượng cao 5kg.', 'https://cdn.flowmart.com/products/gao-st25.jpg', 150000, 120, 67, 80, NULL, NULL, NULL, NULL, 1, 1, NOW(), 1),
+('Dầu ăn Neptune', 'Dầu ăn tinh luyện Neptune 1L.', 'https://cdn.flowmart.com/products/dau-an.jpg', 45000, 95, 34, 150, 'PERCENTAGE', 15, NOW(), DATE_ADD(NOW(), INTERVAL 10 DAY), 1, 1, NOW(), 1);
 
 -- Khuyến mãi mẫu
-INSERT IGNORE INTO promotions (code, description, discount_type, discount_value, type, is_active, priority, image_url, start_date, end_date, created_date, status) VALUES
-('SALE10', 'Giảm 10% cho đơn hàng từ 200k', 'PERCENTAGE', 10, 'ORDER', TRUE, 1, 'https://cdn.flowmart.com/banner/sale10.jpg', NOW(), DATE_ADD(NOW(), INTERVAL 30 DAY), NOW(), 1);
+INSERT IGNORE INTO promotions (code, description, discount_type, discount_value, max_discount_amount, min_order_value, image_url, start_date, end_date, usage_limit, usage_count, created_date, status) VALUES
+('SALE10', 'Giảm 10% cho đơn hàng từ 200k', 'PERCENTAGE', 10, 50000, 200000, 'https://cdn.flowmart.com/banner/sale10.jpg', NOW(), DATE_ADD(NOW(), INTERVAL 30 DAY), 100, 0, NOW(), 1),
+('SUMMER20', 'Giảm 20% mùa hè', 'PERCENTAGE', 20, 100000, 300000, 'https://cdn.flowmart.com/banner/summer20.jpg', NOW(), DATE_ADD(NOW(), INTERVAL 60 DAY), 50, 0, NOW(), 1);
 
 INSERT IGNORE INTO promotion_products (promotion_id, product_id) VALUES (1, 1), (1, 2);
 

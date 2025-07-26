@@ -37,12 +37,30 @@ public class SecurityConfig {
             .cors(AbstractHttpConfigurer::disable) // Disable CORS in Security, use CorsConfig instead
             .authorizeHttpRequests(authz -> authz
                     .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // ✅ Bắt buộc cho preflight
-                .requestMatchers("/api/auth/**").permitAll()
-                .requestMatchers("/api/public/**").permitAll()
-                .requestMatchers("/actuator/**").permitAll()
-                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/api-docs/**").permitAll()
-                .requestMatchers("/test/**").permitAll()
-                .anyRequest().authenticated()
+                    
+                    // Authentication APIs
+                    .requestMatchers("/api/auth/**").permitAll()
+                    
+                    // Public APIs - Không cần authentication
+                    .requestMatchers("/api/public/**").permitAll()
+                    
+                    // Health check & Monitoring
+                    .requestMatchers("/actuator/**").permitAll()
+                    .requestMatchers("/health/**").permitAll()
+                    
+                    // Documentation APIs
+                    .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/api-docs/**").permitAll()
+                    .requestMatchers("/swagger-resources/**").permitAll()
+                    
+                    // Test APIs
+                    .requestMatchers("/test/**").permitAll()
+                    
+                    // Static resources (nếu có)
+                    .requestMatchers("/images/**", "/uploads/**").permitAll()
+                    .requestMatchers("/favicon.ico").permitAll()
+                    
+                    // Tất cả request khác cần authentication
+                    .anyRequest().authenticated()
             )
             .exceptionHandling(e -> e
                 .accessDeniedHandler(accessDeniedHandler)

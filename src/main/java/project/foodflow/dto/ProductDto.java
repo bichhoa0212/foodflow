@@ -12,4 +12,6 @@ public class ProductDto {
     private Integer status;
     private Integer purchaseCount;
     private Integer reviewCount;
+    private String discountType;
+    private java.math.BigDecimal discountValue;
 } 

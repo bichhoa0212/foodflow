@@ -5,6 +5,7 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import io.swagger.v3.oas.annotations.media.Schema;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "promotions")
@@ -77,4 +78,18 @@ public class Promotion {
 
     @Column(name = "image_url", length = 500)
     private String imageUrl;
+
+    /**
+     * Danh sách sản phẩm áp dụng khuyến mãi
+     * Mối quan hệ Many-to-Many với Product
+     */
+    @ManyToMany
+    @JoinTable(
+        name = "promotion_products",
+        joinColumns = @JoinColumn(name = "promotion_id"),
+        inverseJoinColumns = @JoinColumn(name = "product_id")
+    )
+    @Schema(description = "Danh sách sản phẩm áp dụng khuyến mãi")
+    @JsonIgnore
+    private java.util.List<Product> products;
 } 
