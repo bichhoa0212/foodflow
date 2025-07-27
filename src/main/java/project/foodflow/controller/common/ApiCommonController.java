@@ -119,4 +119,34 @@ public class ApiCommonController {
             ));
         }
     }
+
+    /**
+     * Lấy top 10 sản phẩm mới nhất
+     */
+    @GetMapping("/products/top-newest")
+    public ResponseEntity<Response<List<ProductDto>>> getTopNewestProducts() {
+        try {
+            List<ProductDto> topNewestProducts = productService.getTopNewestProducts(10);
+            return ResponseEntity.ok(new Response<>(
+                ReturnCode.SUCCESS.getCode(), 
+                ReturnCode.SUCCESS.getStatus(), 
+                "Lấy top 10 sản phẩm mới nhất thành công", 
+                topNewestProducts
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(new Response<>(
+                ReturnCode.ERROR.getCode(),
+                ReturnCode.ERROR.getStatus(),
+                "Lỗi khi lấy top sản phẩm mới nhất: " + e.getMessage(),
+                null
+            ));
+        }
+    }
+
+    //API tìm kiếm theo tên sản phẩm
+    @GetMapping("/products/search")
+    public ResponseEntity<Response<List<ProductDto>>> searchProducts(@RequestParam String name) {
+        List<ProductDto> products = productService.searchProducts(name);
+        return ResponseEntity.ok(new Response<>(ReturnCode.SUCCESS.getCode(), ReturnCode.SUCCESS.getStatus(), "Tìm kiếm sản phẩm thành công", products));
+    }
 } 

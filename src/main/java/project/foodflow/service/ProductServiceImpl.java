@@ -140,4 +140,47 @@ public class ProductServiceImpl implements ProductService {
             return dto;
         }).collect(java.util.stream.Collectors.toList());
     }
+
+    @Override
+    public List<ProductDto> getTopNewestProducts(int limit) {
+        // Lấy top N sản phẩm mới nhất theo created_date giảm dần
+        org.springframework.data.domain.Pageable pageable = org.springframework.data.domain.PageRequest.of(0, limit);
+        List<Product> topProducts = productRepository.findTopByOrderByCreatedDateDesc(pageable);
+        
+        return topProducts.stream().map(product -> {
+            ProductDto dto = new ProductDto();
+            dto.setId(product.getId());
+            dto.setName(product.getName());
+            dto.setDescription(product.getDescription());
+            dto.setImageUrl(product.getImageUrl());
+            dto.setPrice(product.getPrice());
+            dto.setStatus(product.getStatus());
+            dto.setPurchaseCount(product.getPurchaseCount());
+            dto.setReviewCount(product.getReviewCount());
+            dto.setDiscountType(product.getDiscountType());
+            dto.setDiscountValue(product.getDiscountValue());
+            return dto;
+        }).collect(java.util.stream.Collectors.toList());
+    }
+
+    @Override
+    public List<ProductDto> searchProducts(String name) {
+        // Tìm kiếm sản phẩm theo tên (không phân biệt hoa thường)
+        List<Product> products = productRepository.findByNameContainingIgnoreCase(name);
+        
+        return products.stream().map(product -> {
+            ProductDto dto = new ProductDto();
+            dto.setId(product.getId());
+            dto.setName(product.getName());
+            dto.setDescription(product.getDescription());
+            dto.setImageUrl(product.getImageUrl());
+            dto.setPrice(product.getPrice());
+            dto.setStatus(product.getStatus());
+            dto.setPurchaseCount(product.getPurchaseCount());
+            dto.setReviewCount(product.getReviewCount());
+            dto.setDiscountType(product.getDiscountType());
+            dto.setDiscountValue(product.getDiscountValue());
+            return dto;
+        }).collect(java.util.stream.Collectors.toList());
+    }
 } 

@@ -32,4 +32,18 @@ public interface ProductService {
      * @return List<ProductDto> danh sách sản phẩm có khuyến mãi
      */
     List<ProductDto> getTopDiscountedProducts(int limit);
+    
+    /**
+     * Lấy top N sản phẩm mới nhất
+     * @param limit số lượng sản phẩm cần lấy
+     * @return List<ProductDto> danh sách sản phẩm mới nhất
+     */
+    List<ProductDto> getTopNewestProducts(int limit);
+    
+    /**
+     * Tìm kiếm sản phẩm theo tên
+     * @param name tên sản phẩm cần tìm
+     * @return List<ProductDto> danh sách sản phẩm tìm được
+     */
+    List<ProductDto> searchProducts(String name);
 } 

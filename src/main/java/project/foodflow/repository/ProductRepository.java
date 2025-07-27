@@ -3,6 +3,7 @@ package project.foodflow.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import project.foodflow.entity.Product;
@@ -42,4 +43,20 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
      */
     @Query(value = "SELECT * FROM products WHERE discount_type IS NOT NULL AND discount_value IS NOT NULL ORDER BY discount_value DESC", nativeQuery = true)
     List<Product> findTopByDiscountValueDesc(Pageable pageable);
+    
+    /**
+     * Lấy top N sản phẩm mới nhất theo created_date
+     * @param pageable phân trang với limit
+     * @return List<Product> danh sách sản phẩm mới nhất
+     */
+    @Query(value = "SELECT * FROM products ORDER BY created_date DESC", nativeQuery = true)
+    List<Product> findTopByOrderByCreatedDateDesc(Pageable pageable);
+    
+    /**
+     * Tìm kiếm sản phẩm theo tên (không phân biệt hoa thường)
+     * @param name tên sản phẩm cần tìm
+     * @return List<Product> danh sách sản phẩm tìm được
+     */
+    @Query(value = "SELECT * FROM products WHERE LOWER(name) LIKE LOWER(CONCAT('%', :name, '%')) AND status = 1", nativeQuery = true)
+    List<Product> findByNameContainingIgnoreCase(@Param("name") String name);
 } 
