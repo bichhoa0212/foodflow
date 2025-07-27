@@ -94,8 +94,8 @@ public class AuthService {
                 .authorities(authorities)
                 .build();
         
-        String jwtToken = jwtService.generateToken(userDetails);
-        String refreshToken = jwtService.generateRefreshToken(userDetails);
+        String jwtToken = jwtService.generateToken(userDetails, savedUser.getId().toString(), savedUser.getProvider(), savedUser.getEmail());
+        String refreshToken = jwtService.generateRefreshToken(userDetails, savedUser.getId().toString(), savedUser.getProvider(), savedUser.getEmail());
 
         return new AuthResponse(
                 jwtToken,
@@ -138,8 +138,8 @@ public class AuthService {
                 .authorities(authorities)
                 .build();
         
-        String jwtToken = jwtService.generateToken(userDetails);
-        String refreshToken = jwtService.generateRefreshToken(userDetails);
+        String jwtToken = jwtService.generateToken(userDetails, user.getId().toString(), user.getProvider(), user.getEmail());
+        String refreshToken = jwtService.generateRefreshToken(userDetails, user.getId().toString(), user.getProvider(), user.getEmail());
 
         return new AuthResponse(
                 jwtToken,
@@ -174,7 +174,7 @@ public class AuthService {
                     .build();
 
             if (jwtService.isTokenValid(request.getRefreshToken(), userDetails)) {
-                String accessToken = jwtService.generateToken(userDetails);
+                String accessToken = jwtService.generateToken(userDetails, user.getId().toString(), user.getProvider(), user.getEmail());
                 
                 return new AuthResponse(
                         accessToken,

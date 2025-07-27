@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -69,6 +70,10 @@ public class User {
     @Schema(description = "User's provider metadata", example = "{\"name\": \"John Doe\", \"email\": \"john.doe@example.com\"}")
     private String providerMetaData;
 
+    @Column(name = "avatar", length = 500)
+    @Schema(description = "User's avatar URL", example = "https://example.com/avatar.jpg")
+    private String avatar;
+
     @Column(name = "created_date", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     @Schema(description = "User's created at", example = "dd/mm/yyyy")
@@ -101,7 +106,16 @@ public class User {
     private List<UserRole> userRoles;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<GroupUser> groupUsers;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<UserAddress> userAddresses;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<UserFavorite> userFavorites;
 
     @Override
     public String toString() {

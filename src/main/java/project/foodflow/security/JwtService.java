@@ -31,6 +31,18 @@ public class JwtService {
         return extractClaim(token, Claims::getSubject);
     }
 
+    public String extractUserId(String token) {
+        return extractClaim(token, claims -> claims.get("userId", String.class));
+    }
+
+    public String extractProvider(String token) {
+        return extractClaim(token, claims -> claims.get("provider", String.class));
+    }
+
+    public String extractEmail(String token) {
+        return extractClaim(token, claims -> claims.get("email", String.class));
+    }
+
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
@@ -44,8 +56,24 @@ public class JwtService {
         return buildToken(extraClaims, userDetails, jwtExpiration);
     }
 
+    public String generateToken(UserDetails userDetails, String userId, String provider, String email) {
+        Map<String, Object> extraClaims = new HashMap<>();
+        extraClaims.put("userId", userId);
+        extraClaims.put("provider", provider);
+        extraClaims.put("email", email);
+        return buildToken(extraClaims, userDetails, jwtExpiration);
+    }
+
     public String generateRefreshToken(UserDetails userDetails) {
         return buildToken(new HashMap<>(), userDetails, refreshExpiration);
+    }
+
+    public String generateRefreshToken(UserDetails userDetails, String userId, String provider, String email) {
+        Map<String, Object> extraClaims = new HashMap<>();
+        extraClaims.put("userId", userId);
+        extraClaims.put("provider", provider);
+        extraClaims.put("email", email);
+        return buildToken(extraClaims, userDetails, refreshExpiration);
     }
 
     private String buildToken(

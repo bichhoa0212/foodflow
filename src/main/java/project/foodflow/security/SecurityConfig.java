@@ -44,6 +44,7 @@ public class SecurityConfig {
                     // Public APIs - Không cần authentication
                     .requestMatchers("/api/public/**").permitAll()
                     
+                    
                     // Health check & Monitoring
                     .requestMatchers("/actuator/**").permitAll()
                     .requestMatchers("/health/**").permitAll()

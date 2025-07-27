@@ -105,4 +105,18 @@ INSERT IGNORE INTO sliders (title, image_url, link_url, description, position, i
 
 -- Mở rộng dữ liệu khuyến mãi
 INSERT IGNORE INTO promotions (code, description, discount_type, discount_value, type, is_active, priority, image_url, start_date, end_date, created_date, status) VALUES
-('ORDER20', 'Giảm 20k cho đơn hàng từ 300k', 'FIXED_AMOUNT', 20000, 'ORDER', TRUE, 1, 'https://cdn.flowmart.com/banner/order20.jpg', NOW(), DATE_ADD(NOW(), INTERVAL 20 DAY), NOW(), 1); 
+('ORDER20', 'Giảm 20k cho đơn hàng từ 300k', 'FIXED_AMOUNT', 20000, 'ORDER', TRUE, 1, 'https://cdn.flowmart.com/banner/order20.jpg', NOW(), DATE_ADD(NOW(), INTERVAL 20 DAY), NOW(), 1);
+
+-- Thêm dữ liệu mẫu cho địa chỉ giao hàng
+INSERT IGNORE INTO user_addresses (user_id, name, phone, address, province, district, ward, is_default, status, created_date) VALUES
+(1, 'Nhà riêng', '0123456789', '123 Đường ABC, Phường 1', 'TP.HCM', 'Quận 1', 'Phường 1', true, 1, NOW()),
+(1, 'Công ty', '0987654321', '456 Đường XYZ, Phường 2', 'TP.HCM', 'Quận 3', 'Phường 2', false, 1, NOW()),
+(2, 'Nhà riêng', '0123456788', '789 Đường DEF, Phường 3', 'TP.HCM', 'Quận 5', 'Phường 3', true, 1, NOW());
+
+-- Thêm dữ liệu mẫu cho sản phẩm yêu thích
+INSERT IGNORE INTO user_favorites (user_id, product_id, status, created_date) VALUES
+(1, 1, 1, NOW()),
+(1, 2, 1, NOW()),
+(1, 3, 1, NOW()),
+(2, 1, 1, NOW()),
+(2, 4, 1, NOW()); 

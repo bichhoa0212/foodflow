@@ -323,4 +323,32 @@ CREATE TABLE IF NOT EXISTS sliders (
 
 -- Đã xóa đoạn ALTER TABLE promotions để tránh lỗi duplicate column
 
+-- Địa chỉ giao hàng của user
+CREATE TABLE IF NOT EXISTS user_addresses (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    user_id BIGINT NOT NULL,
+    name VARCHAR(100) NOT NULL,
+    phone VARCHAR(20) NOT NULL,
+    address TEXT NOT NULL,
+    province VARCHAR(100) NOT NULL,
+    district VARCHAR(100) NOT NULL,
+    ward VARCHAR(100) NOT NULL,
+    is_default BOOLEAN NOT NULL DEFAULT FALSE,
+    status INT NOT NULL DEFAULT 1,
+    created_date DATETIME(6) NOT NULL,
+    modified_date DATETIME(6),
+    FOREIGN KEY (user_id) REFERENCES app_users(id)
+);
+
+-- Sản phẩm yêu thích của user
+CREATE TABLE IF NOT EXISTS user_favorites (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    user_id BIGINT NOT NULL,
+    product_id BIGINT NOT NULL,
+    status INT NOT NULL DEFAULT 1,
+    created_date DATETIME(6) NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES app_users(id),
+    FOREIGN KEY (product_id) REFERENCES products(id)
+);
+
 

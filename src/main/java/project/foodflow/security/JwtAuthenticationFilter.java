@@ -45,6 +45,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
             
             if (jwtService.isTokenValid(jwt, userDetails)) {
+                // Extract thông tin từ token và lưu vào AuditListenerUser
+                try {
+                    String userId = jwtService.extractUserId(jwt);
+                    String email = jwtService.extractEmail(jwt);
+                    AuditListenerUser.setCurrentUser(userId, email, username);
+                } catch (Exception e) {
+                    // Nếu extract thất bại, clear AuditListenerUser
+                    AuditListenerUser.clear();
+                }
+                
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userDetails,
                         null,
@@ -57,5 +67,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
         }
         filterChain.doFilter(request, response);
+        
+        // Clear AuditListenerUser sau khi request hoàn thành
+        AuditListenerUser.clear();
     }
 } 
