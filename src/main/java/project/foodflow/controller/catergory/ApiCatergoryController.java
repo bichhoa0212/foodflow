@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/public/categories")
+@RequestMapping("/api/categories")
 public class ApiCatergoryController {
 
     @Autowired
@@ -36,5 +36,35 @@ public class ApiCatergoryController {
             "Lấy danh sách loại sản phẩm thành công",
             categoryDtos
         ));
+    }
+
+    // API lấy danh sách categories với pagination
+    @GetMapping
+    public ResponseEntity<Response<org.springframework.data.domain.Page<CategoryDto>>> getCategories(
+            @org.springframework.web.bind.annotation.RequestParam(defaultValue = "0") int page,
+            @org.springframework.web.bind.annotation.RequestParam(defaultValue = "50") int size
+    ) {
+        try {
+            org.springframework.data.domain.Pageable pageable = org.springframework.data.domain.PageRequest.of(page, size);
+            org.springframework.data.domain.Page<Category> categoryPage = categoryService.getAllCategories(pageable);
+            
+            org.springframework.data.domain.Page<CategoryDto> dtoPage = categoryPage.map(category -> 
+                new CategoryDto(category.getId(), category.getName(), category.getDescription(), category.getImageUrl())
+            );
+            
+            return ResponseEntity.ok(new Response<>(
+                ReturnCode.SUCCESS.getCode(),
+                ReturnCode.SUCCESS.getStatus(),
+                "Lấy danh sách danh mục thành công",
+                dtoPage
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(new Response<>(
+                ReturnCode.ERROR.getCode(),
+                ReturnCode.ERROR.getStatus(),
+                "Lỗi khi lấy danh sách danh mục: " + e.getMessage(),
+                null
+            ));
+        }
     }
 }

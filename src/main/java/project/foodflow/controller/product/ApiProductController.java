@@ -31,6 +31,111 @@ public class ApiProductController {
     private ProductService productService;
 
 
+    @GetMapping
+    public ResponseEntity<Response<org.springframework.data.domain.Page<ProductDto>>> getProducts(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "12") int size,
+            @RequestParam(required = false) String categoryId,
+            @RequestParam(required = false) String name,
+            @RequestParam(defaultValue = "name,asc") String sort,
+            @RequestParam(required = false) String minPrice,
+            @RequestParam(required = false) String maxPrice
+    ) {
+        try {
+            // Parse sort parameter
+            String[] sortParts = sort.split(",");
+            String sortField = sortParts[0];
+            String sortDirection = sortParts.length > 1 ? sortParts[1] : "asc";
+            
+            org.springframework.data.domain.Sort sortObj = sortDirection.equalsIgnoreCase("desc") 
+                ? org.springframework.data.domain.Sort.by(sortField).descending()
+                : org.springframework.data.domain.Sort.by(sortField).ascending();
+            
+            org.springframework.data.domain.Pageable pageable = org.springframework.data.domain.PageRequest.of(page, size, sortObj);
+            
+            // Build specification for filtering
+            org.springframework.data.jpa.domain.Specification<Product> spec = org.springframework.data.jpa.domain.Specification.where(null);
+            
+            if (categoryId != null && !categoryId.trim().isEmpty()) {
+                try {
+                    Long categoryIdLong = Long.parseLong(categoryId);
+                    spec = spec.and((root, query, cb) -> cb.equal(root.get("category").get("id"), categoryIdLong));
+                } catch (NumberFormatException e) {
+                    // Ignore invalid categoryId
+                }
+            }
+            
+            if (name != null && !name.trim().isEmpty()) {
+                spec = spec.and((root, query, cb) -> cb.like(cb.lower(root.get("name")), "%" + name.toLowerCase() + "%"));
+            }
+            
+            if (minPrice != null && !minPrice.trim().isEmpty()) {
+                try {
+                    Double minPriceDouble = Double.parseDouble(minPrice);
+                    spec = spec.and((root, query, cb) -> cb.greaterThanOrEqualTo(root.get("price"), minPriceDouble));
+                } catch (NumberFormatException e) {
+                    // Ignore invalid minPrice
+                }
+            }
+            
+            if (maxPrice != null && !maxPrice.trim().isEmpty()) {
+                try {
+                    Double maxPriceDouble = Double.parseDouble(maxPrice);
+                    spec = spec.and((root, query, cb) -> cb.lessThanOrEqualTo(root.get("price"), maxPriceDouble));
+                } catch (NumberFormatException e) {
+                    // Ignore invalid maxPrice
+                }
+            }
+            
+            // Only show active products
+            spec = spec.and((root, query, cb) -> cb.equal(root.get("status"), "ACTIVE"));
+            
+            org.springframework.data.domain.Page<Product> productPage = productRepository.findAll(spec, pageable);
+            
+            org.springframework.data.domain.Page<ProductDto> dtoPage = productPage.map(product -> {
+                ProductDto dto = new ProductDto();
+                dto.setId(product.getId());
+                dto.setName(product.getName());
+                dto.setDescription(product.getDescription());
+                dto.setImageUrl(product.getImageUrl());
+                dto.setPrice(product.getPrice().doubleValue());
+                dto.setStatus(product.getStatus());
+                dto.setStock(product.getStock());
+                dto.setPurchaseCount(product.getPurchaseCount());
+                dto.setReviewCount(product.getReviewCount());
+                
+                // Set category info
+                if (product.getCategory() != null) {
+                    dto.setCategoryId(product.getCategory().getId());
+                    dto.setCategoryName(product.getCategory().getName());
+                }
+                
+                // Calculate average rating
+                if (product.getReviewCount() > 0) {
+                    Double avgRating = reviewRepository.findAverageRatingByProductId(product.getId());
+                    dto.setRating(avgRating != null ? avgRating : 0.0);
+                }
+                
+                return dto;
+            });
+            
+            return ResponseEntity.ok(new Response<>(
+                ReturnCode.SUCCESS.getCode(), 
+                ReturnCode.SUCCESS.getStatus(), 
+                "Lấy danh sách sản phẩm thành công", 
+                dtoPage
+            ));
+            
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(new Response<>(
+                ReturnCode.ERROR.getCode(),
+                ReturnCode.ERROR.getStatus(),
+                "Lỗi khi lấy danh sách sản phẩm: " + e.getMessage(),
+                null
+            ));
+        }
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<Response<ProductDto>> getProductDetail(@PathVariable Long id) {
         Product product = productRepository.findById(id).orElse(null);
@@ -42,9 +147,24 @@ public class ApiProductController {
         dto.setName(product.getName());
         dto.setDescription(product.getDescription());
         dto.setImageUrl(product.getImageUrl());
-        dto.setPrice(product.getPrice());
+        dto.setPrice(product.getPrice().doubleValue());
         dto.setStatus(product.getStatus());
-        // Có thể bổ sung thêm trường nếu muốn
+        dto.setStock(product.getStock());
+        dto.setPurchaseCount(product.getPurchaseCount());
+        dto.setReviewCount(product.getReviewCount());
+        
+        // Set category info
+        if (product.getCategory() != null) {
+            dto.setCategoryId(product.getCategory().getId());
+            dto.setCategoryName(product.getCategory().getName());
+        }
+        
+        // Calculate average rating
+        if (product.getReviewCount() > 0) {
+            Double avgRating = reviewRepository.findAverageRatingByProductId(product.getId());
+            dto.setRating(avgRating != null ? avgRating : 0.0);
+        }
+        
         return ResponseEntity.ok(new Response<>(ReturnCode.SUCCESS.getCode(), ReturnCode.SUCCESS.getStatus(), "Lấy chi tiết sản phẩm thành công", dto));
     }
 
@@ -56,7 +176,7 @@ public class ApiProductController {
             dto.setName(product.getName());
             dto.setDescription(product.getDescription());
             dto.setImageUrl(product.getImageUrl());
-            dto.setPrice(product.getPrice());
+            dto.setPrice(product.getPrice().doubleValue());
             dto.setStatus(product.getStatus());
             dto.setPurchaseCount(product.getPurchaseCount());
             dto.setReviewCount(product.getReviewCount());
@@ -73,7 +193,7 @@ public class ApiProductController {
             dto.setName(product.getName());
             dto.setDescription(product.getDescription());
             dto.setImageUrl(product.getImageUrl());
-            dto.setPrice(product.getPrice());
+            dto.setPrice(product.getPrice().doubleValue());
             dto.setStatus(product.getStatus());
             dto.setPurchaseCount(product.getPurchaseCount());
             dto.setReviewCount(product.getReviewCount());

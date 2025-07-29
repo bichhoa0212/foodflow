@@ -34,7 +34,7 @@ public class Product {
 
     @Schema(description = "Giá sản phẩm")
     @Column(nullable = false, precision = 10, scale = 2)
-    private BigDecimal price;
+    private Double price;
 
     @Schema(description = "Lượt mua sản phẩm")
     @Column(name = "purchase_count", nullable = false)
@@ -54,7 +54,7 @@ public class Product {
 
     @Schema(description = "Giá trị giảm giá sản phẩm")
     @Column(name = "discount_value", precision = 10, scale = 2)
-    private BigDecimal discountValue;
+    private Double discountValue;
 
     @Schema(description = "Ngày bắt đầu giảm giá sản phẩm")
     @Column(name = "discount_start_date")

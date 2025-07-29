@@ -8,10 +8,14 @@ public class ProductDto {
     private String name;
     private String description;
     private String imageUrl;
-    private java.math.BigDecimal price;
+    private Double price;
     private Integer status;
+    private Integer stock;
     private Integer purchaseCount;
     private Integer reviewCount;
     private String discountType;
-    private java.math.BigDecimal discountValue;
+    private Double discountValue;
+    private Long categoryId;
+    private String categoryName;
+    private Double rating;
 } 

@@ -19,9 +19,9 @@ public class UserFavoriteDto {
     private String productName;
     private String productDescription;
     private String productImageUrl;
-    private BigDecimal productPrice;
+    private Double productPrice;
     private String discountType;
-    private BigDecimal discountValue;
+    private Double discountValue;
     private Integer productStatus;
     private LocalDateTime createdDate;
 } 
