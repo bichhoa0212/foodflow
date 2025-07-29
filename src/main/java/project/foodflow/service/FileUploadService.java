@@ -1,6 +1,7 @@
 package project.foodflow.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -14,6 +15,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class FileUploadService {
 
     @Value("${app.upload.path:uploads/}")
@@ -44,8 +46,10 @@ public class FileUploadService {
         Path filePath = uploadDir.resolve(filename);
         Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
-        // Trả về URL
-        return baseUrl + "/api/files/" + filename;
+        // Trả về URL đúng với endpoint thực tế
+        String fileUrl = baseUrl + "/api/files/" + filename;
+        log.info("Generated file URL: {}", fileUrl);
+        return fileUrl;
     }
 
     /**
@@ -80,9 +84,23 @@ public class FileUploadService {
      * Xóa file từ URL
      */
     public void deleteFileFromUrl(String fileUrl) throws IOException {
-        if (fileUrl != null && fileUrl.startsWith(baseUrl + "/api/files/")) {
-            String filename = fileUrl.substring((baseUrl + "/api/files/").length());
-            deleteFile(filename);
+        if (fileUrl != null) {
+            String filename = null;
+            // Xử lý URL để lấy filename
+            if (fileUrl.contains("/api/files/")) {
+                filename = fileUrl.substring(fileUrl.indexOf("/api/files/") + "/api/files/".length());
+                // Loại bỏ query parameters nếu có
+                if (filename.contains("?")) {
+                    filename = filename.substring(0, filename.indexOf("?"));
+                }
+            }
+            
+            if (filename != null && !filename.isEmpty()) {
+                log.info("Deleting file: {}", filename);
+                deleteFile(filename);
+            } else {
+                log.warn("Could not extract filename from URL: {}", fileUrl);
+            }
         }
     }
 } 

@@ -60,6 +60,9 @@ public class SecurityConfig {
                     .requestMatchers("/images/**", "/uploads/**").permitAll()
                     .requestMatchers("/favicon.ico").permitAll()
                     
+                    // File serving APIs - Không cần authentication để hiển thị ảnh
+                    .requestMatchers("/api/files/**").permitAll()
+                    
                     // Tất cả request khác cần authentication
                     .anyRequest().authenticated()
             )

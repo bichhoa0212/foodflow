@@ -17,8 +17,7 @@ public class CorsConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("http://192.168.21.26:3000")
-                .allowedOriginPatterns("*") // Cho phép tất cả origins
+                .allowedOriginPatterns("*") // Sử dụng patterns thay vì origins
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH", "HEAD")
                 .allowedHeaders("*")
                 .allowCredentials(true)
@@ -29,7 +28,7 @@ public class CorsConfig implements WebMvcConfigurer {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        // Allow all origins (wildcard pattern)
+        // Allow all origins using patterns (không dùng wildcard "*" với allowCredentials)
         configuration.setAllowedOriginPatterns(List.of("*"));
 
         // Allow all methods
